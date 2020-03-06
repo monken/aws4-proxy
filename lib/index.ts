@@ -85,7 +85,7 @@ export class Proxy extends EventEmitter {
   async sign(req: Request) {
     await this.credentials.getPromise();
     const url = parse(req.url || '/');
-    const { host, ...headers } = req.headers;
+    const { host, connection, ...headers } = req.headers;
     const body = await req.readAll();
     const signed = sign({
       host: this.endpointHost || this.endpoint,
@@ -93,7 +93,7 @@ export class Proxy extends EventEmitter {
       region: this.region,
       method: req.method,
       path: url.href,
-      headers: headers,
+      headers,
       agent: this.agent,
       body,
     }, this.credentials);
