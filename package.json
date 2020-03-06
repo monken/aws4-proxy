@@ -1,4 +1,20 @@
 {
+  "name": "aws4-proxy",
+  "keywords": ["aws", "aws4", "proxy", "websocket"],
+  "version": "0.1.0",
+  "author": {
+    "email": "onken@netcubed.de",
+    "name": "Moritz Onken"
+  },
+  "main": "dist/index.js",
+  "bin": {
+    "aws4-proxy": "dist/cli/index.js"
+  },
+  "files": ["dist"],
+  "repository": {
+    "url": "git+https://github.com/monken/aws4-proxy.git",
+    "type": "git"
+  },
   "dependencies": {
     "aws4": "^1.9.1",
     "yargs": "^15.1.0"
