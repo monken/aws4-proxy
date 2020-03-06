@@ -1,7 +1,12 @@
 {
   "name": "aws4-proxy",
-  "keywords": ["aws", "aws4", "proxy", "websocket"],
-  "version": "0.1.0",
+  "keywords": [
+    "aws",
+    "aws4",
+    "proxy",
+    "websocket"
+  ],
+  "version": "0.1.2",
   "description": "Fast, low-footprint aws4 signing proxy with WebSocket support",
   "author": {
     "email": "onken@netcubed.de",
@@ -11,7 +16,9 @@
   "bin": {
     "aws4-proxy": "dist/cli/index.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "repository": {
     "url": "git+https://github.com/monken/aws4-proxy.git",
     "type": "git"
@@ -21,10 +28,10 @@
     "yargs": "^15.1.0"
   },
   "devDependencies": {
-    "aws-sdk": "^2.634.0",
     "@types/aws4": "^1.5.1",
     "@types/node": "^13.7.7",
     "@types/yargs": "^15.0.4",
+    "aws-sdk": "^2.634.0",
     "typescript": "^3.8.3"
   },
   "peerDependencies": {
