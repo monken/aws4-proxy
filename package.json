@@ -15,6 +15,6 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "node dist/cli"
+    "test": "node dist/cli --help"
   }
 }
