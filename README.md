@@ -1,6 +1,7 @@
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/monken/aws4-proxy/build)
-![Apache License](https://img.shields.io/badge/license-Apache--2.0-yellow)
-![Dependencies](https://img.shields.io/badge/dependencies-2-blue)
+[![npm](http://img.shields.io/npm/v/aws4-proxy.svg?style=flat-square)](https://npmjs.org/package/aws4-proxy)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/monken/aws4-proxy/build?style=flat-square)
+![Apache License](https://img.shields.io/badge/license-Apache--2.0-yellow?style=flat-square)
+![Dependencies](https://img.shields.io/badge/dependencies-2-blue?style=flat-square)
 
 # aws4-proxy
 
