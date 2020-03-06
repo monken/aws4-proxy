@@ -2,6 +2,7 @@
   "name": "aws4-proxy",
   "keywords": ["aws", "aws4", "proxy", "websocket"],
   "version": "0.1.0",
+  "description": "Fast, low-footprint aws4 signing proxy with WebSocket support",
   "author": {
     "email": "onken@netcubed.de",
     "name": "Moritz Onken"
@@ -32,5 +33,9 @@
   "scripts": {
     "build": "tsc",
     "test": "node dist/cli --help"
+  },
+  "engineStrict": true,
+  "engines": {
+    "node": ">=10"
   }
 }

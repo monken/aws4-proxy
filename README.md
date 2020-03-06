@@ -39,7 +39,7 @@ Options:
 npm install --global aws4-proxy
 
 # or without installing
-npx aws4-proxy [...]
+npx aws4-proxy --help
 ```
 
 ## Authentication
