@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import * as yargs from 'yargs';
 
 import { Proxy, EnvCredentials } from '../lib';
@@ -72,7 +74,7 @@ async function run() {
   });
 
   proxy.listen(args.port, args.host, function (this: any) {
-    console.log(`Listening on ${this.address().address}:${this.address().port}`);
+    console.log(`Listening on http://${this.address().address}:${this.address().port}/`);
   });
 }
 
