@@ -85,10 +85,11 @@ export class Proxy extends EventEmitter {
   async sign(req: Request) {
     await this.credentials.getPromise();
     const url = parse(req.url || '/');
-    const { host, connection, ...headers } = req.headers;
+    const { host: oldHost, connection, ...headers } = req.headers;
     const body = await req.readAll();
+    const host = this.endpointHost || this.endpoint;
     const signed = sign({
-      host: this.endpointHost || this.endpoint,
+      host,
       service: this.service,
       region: this.region,
       method: req.method,
@@ -96,10 +97,11 @@ export class Proxy extends EventEmitter {
       headers,
       agent: this.agent,
       body,
+      checkServerIdentity: (servername: string) => servername === host ? undefined : new Error('Hostname/IP does not match certificate\'s altnames'),
     }, this.credentials);
     return [this.endpointHost ? {
-      host: this.endpoint,
       ...signed,
+      host: this.endpoint,
     } : signed, body];
   }
 
