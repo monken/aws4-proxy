@@ -98,7 +98,7 @@ export class Proxy extends EventEmitter {
       body,
     }, this.credentials);
     return [this.endpointHost ? {
-      host: this.endpointHost,
+      host: this.endpoint,
       ...signed,
     } : signed, body];
   }
