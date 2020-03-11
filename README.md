@@ -5,6 +5,8 @@
 
 # aws4-proxy
 
+**Fast, low-footprint aws4 signing proxy with WebSocket support**
+
 ```bash
 # Create a signing proxy to S3 and then use the CLI to access without signing
 aws4-proxy --service s3 --region us-east-1
@@ -35,7 +37,7 @@ Options:
 *  `--port`, `-p` **number** [default: 3000]
 *  `--endpoint` **string**
 
-    Required for services that provide a unique endpoint per resource such as the API Gateway, Neptune, etc.
+    Required for services that provide a unique endpoint per resource such as the API Gateway, Neptune, Elasticsearch Service, etc.
 *  `--endpoint-host` **string**
 
     If the endpoint is accessed via a custom hostname (e.g. using a CNAME record or a custom load balancer) provide the original endpoint hostname. Depending on the service, this is required for the signature to be valid.
