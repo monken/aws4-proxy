@@ -12,7 +12,7 @@
     "email": "onken@netcubed.de",
     "name": "Moritz Onken"
   },
-  "main": "dist/index.js",
+  "main": "dist/lib/index.js",
   "bin": {
     "aws4-proxy": "dist/cli/index.js"
   },
