@@ -10,29 +10,36 @@
 aws4-proxy --service s3 --region us-east-1
 aws s3 ls --endpoint http://localhost:3000 --no-sign-request
 
-# Create a proxy to an API Gateway with AWS_IAM authentication and query using curl
+# Proxy to an API Gateway with AWS_IAM authentication and query using curl
 aws4-proxy --service execute-api --region eu-west-1 --endpoint api.mycorp.com
 curl http://localhost:3000/v1/my-api/
 
-# Create a proxy to an Elasticsearch instance with IAM authentication and open Kibana
+# Proxy to an Elasticsearch instance with IAM authentication and open Kibana
 aws4-proxy --service es --region us-east-2 --endpoint search-nfvgk3cqs3nk3u.us-east-2.es.amazonaws.com
 open http://localhost:3000/_plugin/kibana/
+
+# Proxy to a Neptune DB that sits behind a Network Load Balancer with a custom domain name
+aws4-proxy --service neptune-db --endpoint neptune.mycorp.com --endpoint-host cluster-die4eenu.cluster-eede5pho.eu-west-1.neptune.amazonaws.com --region eu-west-1
+wscat localhost:3000/gremlin
 ```
 
 **Command line options:**
 
-```
 Options:
-  --help           Show help                                           [boolean]
-  --version        Show version number                                 [boolean]
-  --level                                                      [default: "info"]
-  --host, -h                                              [default: "127.0.0.1"]
-  --port, -p                                            [number] [default: 3000]
-  --endpoint                                                            [string]
-  --endpoint-host                                                       [string]
-  --service                                                  [string] [required]
-  --region                            [required] [default: "AWS_DEFAULT_REGION"]
-```
+*  `--help` Show help                                           [boolean]
+*  `--service` **string** [required]
+*  `--region` **string** [required] [default: "AWS_DEFAULT_REGION"]
+*  `--version` Show version number **boolean**
+*  `--level` [default: "info"]
+*  `--host`, `-h` [default: "127.0.0.1"]
+*  `--port`, `-p` **number** [default: 3000]
+*  `--endpoint` **string**
+
+    Required for services that provide a unique endpoint per resource such as the API Gateway, Neptune, etc.
+*  `--endpoint-host` **string**
+
+    If the endpoint is accessed via a custom hostname (e.g. using a CNAME record or a custom load balancer) provide the original endpoint hostname. Depending on the service, this is required for the signature to be valid.
+
 
 ## Installation
 
@@ -54,3 +61,4 @@ The proxy will check for the availability of the `aws-sdk` package (not installe
 * Efficient and fast
 * Few external dependencies
 * Supports proxying Kibana for Elasticsearch Service
+* Ability to separately define the hostname used for signing (necessary if your endpoint is behind a custom domain)
