@@ -112,7 +112,8 @@ export class Proxy extends EventEmitter {
   }
 
   async handleUpgrade(req: Request, socketA: Socket) {
-    const [signed] = await this.sign(req);
+    const [signed, body] = await this.sign(req);
+    console.log(JSON.stringify({ method: req.method, path: req.url, bodyLength: body.length, upgrade: true }))
     const r = request(signed);
     r.on('upgrade', (res, socketB: Socket) => {
       const reply = [`HTTP/${res.httpVersion} ${res.statusCode} ${res.statusMessage}`];
