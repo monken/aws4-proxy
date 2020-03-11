@@ -1,8 +1,8 @@
 import { request, Agent } from 'https';
 
-import { createServer, IncomingMessage, ServerResponse } from 'http';
+import { createServer, IncomingMessage, ServerResponse, Server } from 'http';
 
-import { Server, ListenOptions, Socket } from 'net';
+import { ListenOptions, Socket } from 'net';
 
 import { sign } from 'aws4';
 
@@ -74,6 +74,7 @@ export class Proxy extends EventEmitter {
       IncomingMessage: Request,
       ServerResponse: Response,
     }, (req, res) => this.handleRequest(<Request>req, <Response>res));
+    this.server.setTimeout(0);
 
     this.server.on('upgrade', (req, socket) => this.handleUpgrade(<Request>req, <Socket>socket));
 
