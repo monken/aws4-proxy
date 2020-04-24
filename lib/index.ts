@@ -1,6 +1,6 @@
 import { request, Agent } from 'https';
 
-import { createServer, IncomingMessage, ServerResponse, Server } from 'http';
+import { createServer, Server, IncomingMessage, ServerResponse } from 'http';
 
 import { ListenOptions, Socket } from 'net';
 
@@ -12,27 +12,6 @@ export { EnvCredentials } from './credentials';
 
 import * as AWS from 'aws-sdk';
 import { EventEmitter } from 'events';
-
-class Request extends IncomingMessage {
-  async readAll() {
-    let chunks = Buffer.alloc(0);
-    for await (const chunk of this) {
-      chunks = Buffer.concat([chunks, chunk]);
-    }
-    return chunks;
-  }
-}
-
-class Response extends ServerResponse {
-  proxy(req: Request, body: Buffer) {
-    const r = request(req, (res) => {
-      this.writeHead(res.statusCode || 500, res.headers);
-      res.on('data', (chunk) => this.write(chunk));
-      res.on('end', () => this.end());
-    });
-    r.end(body);
-  }
-}
 
 type Credentials = AWS.Credentials;
 
@@ -70,24 +49,21 @@ export class Proxy extends EventEmitter {
     this.endpointHost = endpointHost;
     this.agent = agent || new Agent({ keepAlive: true });
 
-    this.server = createServer({
-      IncomingMessage: Request,
-      ServerResponse: Response,
-    }, (req, res) => this.handleRequest(<Request>req, <Response>res));
+    this.server = createServer((req, res) => this.handleRequest(<IncomingMessage>req, <ServerResponse>res));
     this.server.setTimeout(0);
 
-    this.server.on('upgrade', (req, socket) => this.handleUpgrade(<Request>req, <Socket>socket));
+    this.server.on('upgrade', (req, socket) => this.handleUpgrade(<IncomingMessage>req, <Socket>socket));
 
     this.server.on('error', (err) => this.emit('error', err));
   }
 
   listen(...args: any) { this.server.listen(...args) }
 
-  async sign(req: Request) {
+  async sign(req: IncomingMessage) {
     await this.credentials.getPromise();
     const url = parse(req.url || '/');
     const { host: oldHost, connection, ...headers } = req.headers;
-    const body = await req.readAll();
+    const body = await this.readAll(req);
     const host = this.endpointHost || this.endpoint;
     const signed = sign({
       host,
@@ -106,13 +82,13 @@ export class Proxy extends EventEmitter {
     } : signed, body];
   }
 
-  async handleRequest(req: Request, res: Response) {
+  async handleRequest(req: IncomingMessage, res: ServerResponse) {
     const [signed, body] = await this.sign(req);
     console.log(JSON.stringify({ method: req.method, path: req.url, bodyLength: body.length }))
-    res.proxy(signed, body);
+    this.proxy(res, signed, body);
   }
 
-  async handleUpgrade(req: Request, socketA: Socket) {
+  async handleUpgrade(req: IncomingMessage, socketA: Socket) {
     const [signed, body] = await this.sign(req);
     console.log(JSON.stringify({ method: req.method, path: req.url, bodyLength: body.length, upgrade: true }))
     const r = request(signed);
@@ -129,5 +105,22 @@ export class Proxy extends EventEmitter {
       socketB.pipe(socketA);
     });
     r.end();
+  }
+
+  async readAll(req: IncomingMessage) {
+    let chunks = Buffer.alloc(0);
+    for await (const chunk of req) {
+      chunks = Buffer.concat([chunks, chunk]);
+    }
+    return chunks;
+  }
+
+  proxy(sRes: ServerResponse, req: IncomingMessage, body: Buffer) {
+    const r = request(req, (res) => {
+      sRes.writeHead(res.statusCode || 500, res.headers);
+      res.on('data', (chunk) => sRes.write(chunk));
+      res.on('end', () => sRes.end());
+    });
+    r.end(body);
   }
 }
